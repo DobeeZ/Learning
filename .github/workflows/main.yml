@@ -1,4 +1,4 @@
-name: Ejecutar PerikeOTT-1
+name: Ejecutar SCRIPT
 
 on:
   workflow_dispatch: # Permite ejecución manual
@@ -52,7 +52,7 @@ jobs:
             echo "🔄 Intento $INTENTO de $MAX_INTENTOS"
             echo "========================================"
 
-            # 1. Si OpenVPN ya estaba corriendo de un intento anterior, lo matamos para forzar nueva IP
+            # 1. Limpiar procesos VPN previos solo en caso de reintento
             sudo killall openvpn 2>/dev/null || true
             sleep 2
 
@@ -74,12 +74,11 @@ jobs:
               echo "✅ VPN conectada correctamente."
             fi
 
-            # 5. Ejecutar tu script de Python tal cual está
+            # 5. Ejecutar tu script de Python
             echo "🚀 Lanzando movistar_live.py..."
             if python movistar_live.py; then
               echo "🎉 ¡Script ejecutado con éxito en el intento $INTENTO!"
-              # Cerramos la VPN limpiamente antes de salir del paso
-              sudo killall openvpn 2>/dev/null || true
+              # Mantenemos la VPN activa para que git push funcione correctamente
               exit 0
             fi
 
