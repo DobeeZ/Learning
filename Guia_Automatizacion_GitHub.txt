@@ -1,0 +1,80 @@
+=====================================================================
+GUÍA PASO A PASO: AUTOMATIZACIÓN PUNTUAL DE GITHUB ACTIONS
+=====================================================================
+
+Este documento explica cómo configurar un disparador externo gratuito 
+usando 'cron-job.org' para ejecutar workflows de GitHub de manera 
+ultra-puntual (saltándose las colas de espera de GitHub).
+
+---------------------------------------------------------------------
+PASO 1: CREAR EL TOKEN DE ACCESO (LLAVE) EN GITHUB
+---------------------------------------------------------------------
+1. Entra en GitHub -> Haz clic en tu foto de perfil (arriba a la derecha) -> 'Settings'.
+2. En el menú izquierdo, baja del todo y entra en 'Developer settings'.
+3. Ve a 'Personal access tokens' -> 'Fine-grained tokens'.
+4. Pulsa 'Generate new token' y configúralo así:
+   - Token name: Cron-Perike (o el que quieras)
+   - Expiration: Sin caducar, o si caduca tienes que tener en cuenta de renovarlo.
+   - Repository access: Selecciona 'Only select repositories' y marca los repositorios que quieres activar.
+   - Permissions: Abre 'Repository permissions', busca 'Actions' y cámbiala a 'Read and Write'.
+5. Baja al final, pulsa 'Generate token' y COPIA el código largo que empieza por 'github_pat_...'.
+   *IMPORTANTE: Guárdalo bien, no se volverá a mostrar.*
+
+---------------------------------------------------------------------
+PASO 2: CONFIGURAR EL DESPERTADOR EN CRON-JOB.ORG
+---------------------------------------------------------------------
+1. Regístrate gratis en https://cron-job.org
+2. En el panel (Dashboard), ve a la pestaña 'Cronjobs' y haz clic en 'Create cronjob'.
+3. Rellena los datos principales:
+   - Title: Ejecutar 0TT (o el nombre que prefieras)
+   - URL: Cambia los datos en MAYÚSCULAS por los tuyos reales:
+     https://api.github.com/repos/TU_USUARIO/TU_REPOSITORIO/actions/workflows/TU_ARCHIVO.yml/dispatches
+     *(Ojo: Pon los nombres exactos)*
+   
+
+4. Despliega la sección 'Advanced' (Avanzado):
+   - Request method: Cambiar a POST
+   - Ve a la pestaña 'Headers' y añade estas 3 líneas (clic en 'Add header' para cada una):
+     ┌───────────────────────┬──────────────────────────────────────────────┐
+     │ KEY                   │ VALUE                                        │
+     ├───────────────────────┼──────────────────────────────────────────────┤
+     │ Accept                │ application/vnd.github+json                  │
+     │ Authorization         │ Bearer PEGAS_TU_TOKEN_DE_GITHUB_PASO_1       │
+     │ X-GitHub-Api-Version  │ 2022-11-28                                   │
+     └───────────────────────┴──────────────────────────────────────────────┘
+     *(Nota: En Authorization va la palabra 'Bearer', un espacio y luego el token)*
+
+5. Configura el 'Request body' (Cuerpo de la petición):
+   - En el cuadro de texto grande, pega exactamente esto:
+     { "ref": "main" }
+     *(Cambia 'main' si tu rama principal se llama 'master')*
+
+6. Pulsa el botón gris justo arriba del cuadro de texto que dice:
+   » ADD CONTENT-TYPE HEADER NOW  (Esto añade automáticamente el Content-Type: application/json) a los HEADERS
+
+7. Configura el 'Schedule' (Horario):
+   - Timezone: Busca y selecciona 'Europe/Madrid' (u otra zona local).
+   - Elige los días y las horas exactas de tu país en las que quieras que se ejecute.
+
+8. Baja al fondo y pulsa el botón verde 'Create'.
+
+---------------------------------------------------------------------
+PASO 3: PROBAR QUE FUNCIONA
+---------------------------------------------------------------------
+1. En la lista de tus tareas en cron-job.org, busca la que acabas de crear y dale al botón 'Test' (o icono de Play '▶').
+2. Si la conexión es correcta, saldrá un mensaje en verde: 'Status: 204 No Content'.
+3. Ve a la pestaña 'Actions' de tu repositorio de GitHub: verás que el script se ha encendido solo en ese mismo segundo.
+
+---------------------------------------------------------------------
+PASO 4: MODIFICAR EL WORKFLOW EN GITHUB (EVITAR DOBLE EJECUCIÓN)
+---------------------------------------------------------------------
+Para que GitHub no intente ejecutar el script por su cuenta con retraso, edita tu archivo '.yml' (ej. ejecutar.yml) en GitHub y quita las líneas de 'schedule'. Debe quedar así al principio:
+
+name: Ejecutar Script (o el nombre que hayas puesto)
+
+on:
+  workflow_dispatch: # Permite la ejecución desde la web externa y manual
+
+# El resto de tu script (jobs, steps...) se queda exactamente igual hacia abajo.
+# Lo que hemos eliminado por completo son las líneas de schedule: y el cron:
+=====================================================================
