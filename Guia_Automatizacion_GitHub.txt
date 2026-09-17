@@ -65,9 +65,9 @@ PASO 3: PROBAR QUE FUNCIONA
 2. Si la conexión es correcta, saldrá un mensaje en verde: 'Status: 204 No Content'.
 3. Ve a la pestaña 'Actions' de tu repositorio de GitHub: verás que el script se ha encendido solo en ese mismo segundo.
 
----------------------------------------------------------------------
-PASO 4: MODIFICAR EL WORKFLOW EN GITHUB (EVITAR DOBLE EJECUCIÓN)
----------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------
+PASO 4: OPCIONAL - (SOLO LO HACES SI TIENES PUESTO QUE SE AUTOMATICE CON WORKFLOW en GITHUB, SI HAS SEGUIDO MI TUTORIAL NO TIENES QUE HACER ESTO.)
+--------------------------------------------------------------------------------------------------------------------------------------------------
 Para que GitHub no intente ejecutar el script por su cuenta con retraso, edita tu archivo '.yml' (ej. ejecutar.yml) en GitHub y quita las líneas de 'schedule'. Debe quedar así al principio:
 
 name: Ejecutar Script (o el nombre que hayas puesto)
