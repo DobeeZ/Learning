@@ -40,9 +40,9 @@ Para que el script pueda guardar los cambios y actualizar el repositorio automá
 ## 5. Crear el workflow
 1. Ve a **Add file → Create new file**.
 2. En el nombre escribe exactamente: `.github/workflows/ejecutar.yml` (al escribir las `/` se crean las carpetas solas).
-3. Pega este contenido:
+3. Pega este contenido: ---
 
-```yaml
+
 name: Ejecutar script de Python
 
 on:
@@ -80,8 +80,10 @@ jobs:
           git add .
           git diff --cached --quiet || git commit -m "Actualización automática"
           git push
-```
 
+
+
+-----
 4. Pulsa **Commit changes**.
 
 ## 6. Probarlo
