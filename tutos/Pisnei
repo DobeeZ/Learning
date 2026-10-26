@@ -7,7 +7,7 @@
 
 ## 2. Subir los archivos
 1. En el repositorio, pulsa **Add file → Upload files**.
-2. Arrastra los archivos de la carpeta (por ejemplo `script_pisney_VomiStar.py` y el resto). Arrastra los archivos, no la carpeta entera, para que queden en la raíz.
+2. Arrastra los archivos de la carpeta (por ejemplo `script_pisney_VomiStar.py` y el resto).
 3. Pulsa **Commit changes**.
 
 ## 3. Crear el archivo requirements.txt
